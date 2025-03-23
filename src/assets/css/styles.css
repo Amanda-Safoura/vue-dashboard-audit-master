@@ -1,0 +1,57 @@
+body {
+    font-size: 14px;
+    color: #4c5258;
+    letter-spacing: .5px;
+    font-family: Roboto, sans-serif;
+    background-color: #f7f8fa;
+    overflow-x: hidden;
+}
+
+@font-face {
+    font-family: boxicons;
+    font-weight: 400;
+    font-style: normal;
+    src: url(../fonts/boxicons.eot);
+    src: url(../fonts/boxicons.eot) format('embedded-opentype'), url(../fonts/boxicons.woff2) format('woff2'), url(../fonts/boxicons.woff) format('woff'), url(../fonts/boxicons.ttf) format('truetype'), url(../fonts/boxicons.svg?#boxicons) format('svg')
+}
+
+.bx {
+    font-family: boxicons !important;
+    font-weight: 400;
+    font-style: normal;
+    font-variant: normal;
+    line-height: inherit;
+    display: inline-block;
+    text-transform: none;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale
+}
+
+.bx-plus:before {
+	content: "\eb21"
+}
+
+.bxs-circle:before {
+    content: "\ec9b"
+}
+
+.priority-done {
+    color: #16e15e
+}
+
+.priority-inProgress {
+    color: #fffd6e
+}
+
+.priority-toDo {
+    color: #05c5c5
+}
+
+
+a {
+    text-decoration: none;
+}
+
+::placeholder {
+    opacity: 0.4 !important;
+}
