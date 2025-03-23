@@ -6,18 +6,8 @@ export const authService = {
     return axios.post(`${API_URL}/login`, credentials)
   },
 
-  async logout() {
-    return axios.post(
-      `${API_URL}/logout`,
-      {},
-      {
-        headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-      }
-    )
-  },
-
   async getUser() {
-    return axios.get(`${API_URL}/user`, {
+    return axios.get(`${API_URL}/users/me`, {
       headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
     })
   }

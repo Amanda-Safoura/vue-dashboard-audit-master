@@ -1,35 +1,43 @@
 <template>
-  <div class="audit-card" @click="$emit('view', audit)">
-    <h3>{{ audit.name }}</h3>
-    <p>Entreprise: {{ audit.company.name }}</p>
-    <p>Date: {{ new Date(audit.createdAt).toLocaleDateString() }}</p>
-    <button @click.stop="$emit('delete', audit.id)">Supprimer</button>
-  </div>
+  <BCard @click="viewAudit" class="audit-card" title="Audit">
+    <BCardBody>
+      <BCardTitle>{{ audit.name }}</BCardTitle>
+      <BCardText>
+        <strong>Entreprise:</strong> {{ audit.company.name }}<br />
+        <strong>Date:</strong> {{ formattedDate }}
+      </BCardText>
+      <BButton variant="danger" @click.stop="deleteAudit"> <BIconTrashFill class="me-1" /> Supprimer </BButton>
+    </BCardBody>
+  </BCard>
 </template>
 
-<script>
-export default {
-  props: {
-    audit: Object
-  }
-}
+<script setup>
+import { computed } from 'vue'
+import { BCard, BCardBody, BCardTitle, BCardText, BButton } from 'bootstrap-vue-next'
+import { BIconTrashFill } from 'bootstrap-icons-vue'
+
+const props = defineProps({
+  audit: Object
+})
+
+const emit = defineEmits(['view', 'delete'])
+
+const formattedDate = computed(() => new Date(props.audit.createdAt).toLocaleDateString())
+
+const viewAudit = () => emit('view', props.audit)
+const deleteAudit = () => emit('delete', props.audit.id)
 </script>
 
 <style scoped>
 .audit-card {
-  border: 1px solid #ccc;
-  padding: 10px;
-  border-radius: 5px;
   cursor: pointer;
+  transition:
+    transform 0.2s ease-in-out,
+    box-shadow 0.2s ease-in-out;
 }
+
 .audit-card:hover {
-  background: #f5f5f5;
-}
-button {
-  background: red;
-  color: white;
-  border: none;
-  padding: 5px;
-  cursor: pointer;
+  transform: translateY(-3px);
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.1);
 }
 </style>

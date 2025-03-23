@@ -1,53 +1,35 @@
 <template>
-  <nav class="navbar">
-    <div class="container">
-      <router-link to="/" class="brand">Audit App</router-link>
-      <ul class="nav-links">
-        <li><router-link to="/audits">Mes Audits</router-link></li>
-        <li><button @click="logout">Déconnexion</button></li>
-      </ul>
-    </div>
-  </nav>
+  <BNavbar toggleable="lg" type="dark" variant="dark">
+    <BContainer>
+      <BNavbarBrand to="/">Audit App</BNavbarBrand>
+
+      <BNavbarToggle target="nav-collapse" />
+      <BCollapse id="nav-collapse" is-nav>
+        <BNavbarNav class="ms-auto">
+          <BNavItem to="/audits">Mes Audits</BNavItem>
+          <BNavItem>
+            <BButton variant="danger" @click="logout"> <i class="bi bi-box-arrow-right"></i> Déconnexion </BButton>
+          </BNavItem>
+        </BNavbarNav>
+      </BCollapse>
+    </BContainer>
+  </BNavbar>
 </template>
 
-<script>
-import { authService } from '../api/authService'
+<script setup>
+import { useRouter } from 'vue-router'
+import { BNavbar, BNavbarBrand, BNavbarNav, BNavItem, BButton, BContainer, BNavbarToggle, BCollapse } from 'bootstrap-vue-next'
 
-export default {
-  methods: {
-    async logout() {
-      await authService.logout()
-      localStorage.removeItem('token')
-      this.$router.push('/login')
-    }
-  }
+const router = useRouter()
+
+const logout = () => {
+  localStorage.removeItem('token')
+  router.push('/login')
 }
 </script>
 
 <style scoped>
-.navbar {
-  background: #333;
-  color: white;
-  padding: 1rem;
-}
-.container {
-  display: flex;
-  justify-content: space-between;
-  align-items: center;
-}
-.nav-links {
-  list-style: none;
-  display: flex;
-}
-.nav-links li {
-  margin-left: 20px;
-}
-.nav-links a,
-.nav-links button {
-  color: white;
-  text-decoration: none;
-  background: none;
-  border: none;
-  cursor: pointer;
+.bi-box-arrow-right {
+  margin-right: 5px;
 }
 </style>

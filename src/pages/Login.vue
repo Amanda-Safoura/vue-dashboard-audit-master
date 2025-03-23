@@ -1,39 +1,49 @@
 <template>
   <div class="login-container">
     <h2>Connexion</h2>
-    <form @submit.prevent="login">
-      <label>Username</label>
-      <input type="text" v-model="credentials.username" required />
+    <BForm @submit.prevent="login">
+      <BFormGroup label="Nom d'utilisateur">
+        <BFormInput v-model="credentials.username" type="text" required placeholder="Entrez votre nom d'utilisateur" />
+      </BFormGroup>
 
-      <label>Mot de passe</label>
-      <input type="password" v-model="credentials.password" required />
+      <BFormGroup label="Mot de passe">
+        <BFormInput v-model="credentials.password" type="password" required placeholder="Entrez votre mot de passe" />
+      </BFormGroup>
+      <BButton type="submit" variant="primary" block>Se connecter</BButton>
 
-      <button type="submit">Se connecter</button>
       <p v-if="error" class="error">{{ error }}</p>
-    </form>
+    </BForm>
   </div>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
+import { useRouter } from 'vue-router'
 import { authService } from '../api/authService'
+import { BForm, BFormGroup, BFormInput, BButton } from 'bootstrap-vue-next'
 
-export default {
-  data() {
-    return {
-      credentials: { username: '', password: '' },
-      error: ''
-    }
-  },
-  methods: {
-    async login() {
-      try {
-        const response = await authService.login(this.credentials)
-        localStorage.setItem('token', response.data.token)
-        this.$router.push('/audits')
-      } catch (err) {
-        this.error = 'Identifiants incorrects.'
-      }
-    }
+// Initialisation des références
+const credentials = ref({
+  username: '',
+  password: ''
+})
+
+const error = ref('')
+const router = useRouter() // Récupération du router
+
+// Méthode de connexion
+const login = async () => {
+  if (!credentials.value.username || !credentials.value.password) {
+    error.value = 'Veuillez remplir tous les champs.'
+    return
+  }
+
+  try {
+    const response = await authService.login(credentials.value)
+    localStorage.setItem('token', response.data.token)
+    router.push('/audits')
+  } catch (err) {
+    error.value = err.response?.data?.message || 'Une erreur est survenue.'
   }
 }
 </script>
@@ -47,7 +57,10 @@ export default {
   border-radius: 5px;
   text-align: center;
 }
+
 .error {
   color: red;
+  font-size: 14px;
+  margin-top: 10px;
 }
 </style>

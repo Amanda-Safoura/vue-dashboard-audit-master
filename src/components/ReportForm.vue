@@ -1,83 +1,62 @@
 <template>
-  <div class="modal" v-if="show">
-    <div class="modal-content">
-      <h3>Rapport de sous-section</h3>
+  <BModal :show="show" title="Rapport de sous-section" @hide="$emit('close')" centered @update:show="$emit('update:show', false)">
+    <template #default>
+      <BFormCheckbox v-model="isOkey" :checked="isOkey" class="mb-2"> Conforme </BFormCheckbox>
 
-      <label> <input type="checkbox" v-model="isOkey" /> Conforme </label>
+      <BFormTextarea v-if="!isOkey" v-model="reportMessage" placeholder="Détaillez le problème..." rows="3" class="mb-2" />
 
-      <textarea v-if="!isOkey" v-model="reportMessage" placeholder="Détaillez le problème..."></textarea>
+      <BFormFile v-if="!isOkey" @change="handleFileUpload" class="mb-2" />
 
-      <input v-if="!isOkey" type="file" @change="handleFileUpload" />
-
-      <div class="actions">
-        <button @click="submitReport">Soumettre</button>
-        <button @click="$emit('close')">Annuler</button>
+      <div class="d-flex justify-content-between">
+        <BButton variant="primary" @click="submitReport">Soumettre</BButton>
+        <BButton variant="secondary" @click="$emit('close')">Annuler</BButton>
       </div>
-    </div>
-  </div>
+    </template>
+  </BModal>
 </template>
 
-<script>
+<script setup>
+import { ref } from 'vue'
 import { reportService } from '../api/reportService'
+import { BModal, BFormCheckbox, BFormFile, BButton, BFormTextarea } from 'bootstrap-vue-next'
 
-export default {
-  props: {
-    subSectionId: Number,
-    show: Boolean
-  },
-  data() {
-    return {
-      isOkey: true,
-      reportMessage: '',
-      reportProof: null
-    }
-  },
-  methods: {
-    handleFileUpload(event) {
-      this.reportProof = event.target.files[0]
-    },
-    async submitReport() {
-      const formData = new FormData()
-      formData.append('is_okey', this.isOkey)
-      if (!this.isOkey) {
-        formData.append('report_message', this.reportMessage)
-        if (this.reportProof) {
-          formData.append('report_proof', this.reportProof)
-        }
-      }
-      await reportService.createReport(this.subSectionId, formData)
-      this.$emit('close')
+// Props to accept `show` and `subSectionId` from the parent component
+const props = defineProps({
+  subSectionId: Number,
+  show: Boolean
+})
+
+const emit = defineEmits(['update:show', 'close'])
+
+const isOkey = ref(true)
+const reportMessage = ref('')
+const reportProof = ref(null)
+
+const handleFileUpload = (event) => {
+  reportProof.value = event.target.files[0]
+}
+
+const submitReport = async () => {
+  const formData = new FormData()
+  formData.append('is_okey', isOkey.value)
+
+  if (!isOkey.value) {
+    formData.append('report_message', reportMessage.value)
+    if (reportProof.value) {
+      formData.append('report_proof', reportProof.value)
     }
   }
+
+  await reportService.createReport(props.subSectionId, formData)
+  emit('update:show', false) // Close the modal after submitting the report
+  emit('close')
 }
 </script>
 
 <style scoped>
-.modal {
-  position: fixed;
-  top: 0;
-  left: 0;
-  width: 100%;
-  height: 100%;
-  background: rgba(0, 0, 0, 0.5);
-  display: flex;
-  justify-content: center;
-  align-items: center;
-}
 .modal-content {
-  background: white;
   padding: 20px;
   border-radius: 8px;
   width: 400px;
-}
-.actions {
-  display: flex;
-  justify-content: space-between;
-  margin-top: 10px;
-}
-textarea {
-  width: 100%;
-  height: 80px;
-  margin-top: 10px;
 }
 </style>
