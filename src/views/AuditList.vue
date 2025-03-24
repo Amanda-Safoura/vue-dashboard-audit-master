@@ -7,41 +7,45 @@
       </template>
     </BTable>
   </div>
+  <div class="mt-5"></div>
+  <RouterView />
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import { BTable, BButton } from 'bootstrap-vue-next';
-import { getAudits } from '@/services/audits';
+import { ref, onMounted } from 'vue'
+import { BTable, BButton } from 'bootstrap-vue-next'
+import { getAudits } from '@/services/audits'
+import { useRouter } from 'vue-router'
 
-const audits = ref([]);
+const router = useRouter()
+
+const audits = ref([])
 const fields = ref([
-  { key: 'name', label: 'Nom de l\'Audit' },
+  { key: 'name', label: "Nom de l'Audit" },
   { key: 'company.name', label: 'Entreprise' },
   { key: 'createdAt', label: 'Date de création' },
   { key: 'actions', label: 'Actions' }
-]);
+])
 
 const fetchAudits = async () => {
   try {
-    const auditListResponse = await getAudits();
+    const auditListResponse = await getAudits()
 
     audits.value = auditListResponse.map((audit) => {
       const auditDate = new Date(audit.createdAt)
       audit.createdAt = auditDate.toLocaleString()
       return audit
     })
-
   } catch (error) {
-    console.error('Erreur lors de la récupération des audits:', error);
+    console.error('Erreur lors de la récupération des audits:', error)
   }
-};
+}
 
 const viewAudit = (audit) => {
-  console.log('Voir l\'audit:', audit);
-};
+  router.push(`/dashboard/audits/${audit.id}`)
+}
 
-onMounted(fetchAudits);
+onMounted(fetchAudits)
 </script>
 
 <style scoped>

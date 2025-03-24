@@ -2,7 +2,7 @@ import axios from 'axios';
 import { getToken } from '../services/auth';  // Service pour récupérer le token JWT
 
 // URL de l'API
-const API_URL = 'http://localhost:8000/api';
+const API_URL = 'http://192.168.100.121:8000/api';
 
 // Crée une instance Axios avec les paramètres de base
 const axiosInstance = axios.create({

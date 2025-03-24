@@ -3,12 +3,23 @@ import { API_URL, config } from '@/services/auth';
 
 export const getAuditSubsections = async () => {
   try {
-    const response = await axios.get(`${API_URL}/audit-subsections`, config);
+    const response = await axios.get(`${API_URL}/audit_subsections`, config);
     return response.data;
   } catch (error) {
     throw new Error('Erreur lors de la récupération des sous-sections d\'audit');
   }
 };
+
+
+export const getAuditSubsectionById = async (id) => {
+  try {
+    const response = await axios.get(`${API_URL}/audit_subsections/${id}`, config);
+    return response.data;
+  } catch (error) {
+    throw new Error('Erreur lors de la récupération des sous-sections d\'audit');
+  }
+};
+
 
 export const createAuditSubsection = async (subsectionData) => {
   try {

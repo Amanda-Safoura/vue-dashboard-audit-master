@@ -1,13 +1,13 @@
-import { createRouter, createWebHistory } from 'vue-router';
-import Login from '../views/LoginPage.vue';
-import Dashboard from '../views/Dashboard.vue';
-import Agents from '../views/AgentList.vue';
-import AuditSections from '../views/AuditSectionList.vue';
-import AuditSubsections from '../views/AuditSubsectionList.vue';
-import Audits from '../views/AuditList.vue';
-import Reports from '../views/ReportList.vue';
+import { createRouter, createWebHistory } from 'vue-router'
+import Login from '../views/LoginPage.vue'
+import Dashboard from '../views/Dashboard.vue'
+import Agents from '../views/AgentList.vue'
+import AuditSections from '../views/AuditSectionList.vue'
+import AuditSubsections from '../views/AuditSubsectionList.vue'
+import Audits from '../views/AuditList.vue'
+import Reports from '../views/ReportList.vue'
 
-import store from '../store'; // Pour vérifier l'authentification
+import store from '../store' // Pour vérifier l'authentification
 
 const routes = [
   {
@@ -33,22 +33,26 @@ const routes = [
       {
         path: 'audit-sections',
         name: 'AuditSections',
-        component: AuditSections
-      },
-      {
-        path: 'audit-subsections',
-        name: 'AuditSubsections',
-        component: AuditSubsections
+        component: AuditSections,
+        children: [
+          {
+            path: ':id',
+            name: 'AuditSubsections',
+            component: AuditSubsections
+          }
+        ]
       },
       {
         path: 'audits',
         name: 'Audits',
-        component: Audits
-      },
-      {
-        path: '/reports',
-        name: 'Reports',
-        component: Reports
+        component: Audits,
+        children: [
+          {
+            path: ':id',
+            name: 'Reports',
+            component: Reports
+          }
+        ]
       }
     ]
   },
@@ -56,21 +60,21 @@ const routes = [
     path: '/:catchAll(.*)', // Cette route gère les chemins non définis
     redirect: '/'
   }
-];
+]
 
 // Route Guard pour vérifier si l'utilisateur est authentifié avant d'accéder aux pages protégées
 const router = createRouter({
   history: createWebHistory(),
   routes
-});
+})
 
 // Gardien de navigation pour les routes nécessitant une authentification
 router.beforeEach((to, from, next) => {
   if (to.meta.requiresAuth && !store.getters.isAuthenticated) {
-    next({ name: 'Login' }); // Redirige vers la page de connexion si l'utilisateur n'est pas authentifié
+    next({ name: 'Login' }) // Redirige vers la page de connexion si l'utilisateur n'est pas authentifié
   } else {
-    next();
+    next()
   }
-});
+})
 
-export default router;
+export default router

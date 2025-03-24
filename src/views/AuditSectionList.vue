@@ -21,58 +21,58 @@
 </template>
 
 <script setup>
-import { ref, onMounted } from 'vue';
-import axios from 'axios';
-import { BButton, BModal, BFormGroup, BFormInput, BTable } from 'bootstrap-vue-next';
+import { ref, onMounted } from 'vue'
+import { BButton, BModal, BFormGroup, BFormInput, BTable } from 'bootstrap-vue-next'
+import { createAuditSection, getAuditSections } from '@/services/auditSections'
 
-const sections = ref([]);
+const sections = ref([])
 const fields = ref([
   { key: 'name', label: 'Nom' },
   { key: 'actions', label: 'Actions' }
-]);
+])
 
-const showModal = ref(false);
+const showModal = ref(false)
 const newSection = ref({
   name: ''
-});
+})
 
 const fetchSections = async () => {
   try {
-    const response = await axios.get('/api/audit-sections');
-    sections.value = response.data;
+    const response = await getAuditSections()
+    sections.value = response.data
   } catch (error) {
-    console.error('Erreur lors de la récupération des sections:', error);
+    console.error('Erreur lors de la récupération des sections:', error)
   }
-};
+}
 
 const openAddSectionModal = () => {
-  showModal.value = true;
-};
+  showModal.value = true
+}
 
 const handleSubmit = async () => {
   try {
-    await axios.post('/api/audit-sections', newSection.value);
-    fetchSections();
-    showModal.value = false;
+    await createAuditSection(newSection.value)
+    fetchSections()
+    showModal.value = false
   } catch (error) {
-    console.error('Erreur lors de l\'ajout de la section:', error);
+    console.error("Erreur lors de l'ajout de la section:", error)
   }
-};
+}
 
 const editSection = (section) => {
-  console.log('Édition de la section:', section);
-};
+  console.log('Édition de la section:', section)
+}
 
 const deleteSection = async (section) => {
   try {
-    await axios.delete(`/api/audit-sections/${section.id}`);
-    fetchSections();
+    await axios.delete(`/api/audit-sections/${section.id}`)
+    fetchSections()
   } catch (error) {
-    console.error('Erreur lors de la suppression de la section:', error);
+    console.error('Erreur lors de la suppression de la section:', error)
   }
-};
+}
 
-onMounted(fetchSections);
+onMounted(fetchSections)
 </script>
 
 <style scoped>
