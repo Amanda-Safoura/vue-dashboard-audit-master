@@ -1,28 +1,23 @@
-import axios from 'axios'
-import { API_URL } from '../utils/constants'
+import { apiClient } from "./apiClient";
 
 export const auditService = {
-  async getAudits() {
-    return axios.get(`${API_URL}/audits`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
+  getAll() {
+    return apiClient.get("/audits");
   },
 
-  async getAudit(id) {
-    return axios.get(`${API_URL}/audits/${id}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
+  getById(id) {
+    return apiClient.get(`/audits/${id}`);
   },
 
-  async createAudit(data) {
-    return axios.post(`${API_URL}/audits`, data, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
+  create(data) {
+    return apiClient.post("/audits", data);
   },
 
-  async deleteAudit(id) {
-    return axios.delete(`${API_URL}/audits/${id}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
+  update(id, data) {
+    return apiClient.put(`/audits/${id}`, data);
+  },
+
+  delete(id) {
+    return apiClient.delete(`/audits/${id}`);
   }
-}
+};

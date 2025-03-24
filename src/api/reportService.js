@@ -1,16 +1,23 @@
-import axios from 'axios'
-import { API_URL } from '../utils/constants'
+import { apiClient } from "./apiClient";
 
 export const reportService = {
-  async getReport(subsectionId) {
-    return axios.get(`${API_URL}/subsections/${subsectionId}/report`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
+  getAll() {
+    return apiClient.get("/audit_reports");
   },
 
-  async createReport(subsectionId, data) {
-    return axios.post(`${API_URL}/subsections/${subsectionId}/report`, data, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
+  getById(id) {
+    return apiClient.get(`/audit_reports/${id}`);
+  },
+
+  create(data) {
+    return apiClient.post("/audit_reports", data);
+  },
+
+  update(id, data) {
+    return apiClient.put(`/audit_reports/${id}`, data);
+  },
+
+  delete(id) {
+    return apiClient.delete(`/audit_reports/${id}`);
   }
-}
+};

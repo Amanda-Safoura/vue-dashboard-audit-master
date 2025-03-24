@@ -1,10 +1,23 @@
-import axios from 'axios'
-import { API_URL } from '../utils/constants'
+import { apiClient } from "./apiClient";
 
 export const companyService = {
-  async getCompanies() {
-    return axios.get(`${API_URL}/companies`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
+  getAll() {
+    return apiClient.get("/companies");
+  },
+
+  getById(id) {
+    return apiClient.get(`/companies/${id}`);
+  },
+
+  create(data) {
+    return apiClient.post("/companies", data);
+  },
+
+  update(id, data) {
+    return apiClient.put(`/companies/${id}`, data);
+  },
+
+  delete(id) {
+    return apiClient.delete(`/companies/${id}`);
   }
-}
+};

@@ -1,14 +1,11 @@
-import axios from 'axios'
-import { API_URL } from '../utils/constants'
+import { apiClient } from "./apiClient";
 
 export const authService = {
-  async login(credentials) {
-    return axios.post(`${API_URL}/login`, credentials)
+  login(credentials) {
+    return apiClient.post("users/login", credentials);
   },
 
-  async getUser() {
-    return axios.get(`${API_URL}/users/me`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}` }
-    })
+  getProfile() {
+    return apiClient.get("users/me");
   }
-}
+};

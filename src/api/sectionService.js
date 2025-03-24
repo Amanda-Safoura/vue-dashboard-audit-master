@@ -1,22 +1,23 @@
-import axios from 'axios'
-import { API_URL } from '../utils/constants'
+import { apiClient } from "./apiClient";
 
 export const sectionService = {
-  async getSections() {
-    return axios.get(`${API_URL}/audit_sections`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-type': 'application/json' }
-    })
+  getAll() {
+    return apiClient.get("/audit_sections");
   },
 
-  async createSection(data) {
-    return axios.post(`${API_URL}/audit_sections`, data, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-type': 'application/json' }
-    })
+  getById(id) {
+    return apiClient.get(`/audit_sections/${id}`);
   },
 
-  async deleteSection(id) {
-    return axios.delete(`${API_URL}/audit_sections/${id}`, {
-      headers: { Authorization: `Bearer ${localStorage.getItem('token')}`, 'Content-type': 'application/json' }
-    })
+  create(data) {
+    return apiClient.post("/audit_sections", data);
+  },
+
+  update(id, data) {
+    return apiClient.put(`/audit_sections/${id}`, data);
+  },
+
+  delete(id) {
+    return apiClient.delete(`/audit_sections/${id}`);
   }
-}
+};

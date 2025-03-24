@@ -1,48 +1,76 @@
-import { createRouter, createWebHistory } from 'vue-router'
-import Login from '../pages/Login.vue'
-import AuthLayout from '../layouts/AuthLayout.vue'
-import AuditList from '../pages/AuditList.vue'
-import AuditDetail from '../pages/AuditDetail.vue'
-import SectionDetail from '../pages/SectionDetail.vue'
-import DefaultLayout from '../layouts/DefaultLayout.vue'
+import { createRouter, createWebHistory } from 'vue-router';
+import Login from '../views/LoginPage.vue';
+import Dashboard from '../views/Dashboard.vue';
+import Agents from '../views/AgentList.vue';
+import AuditSections from '../views/AuditSectionList.vue';
+import AuditSubsections from '../views/AuditSubsectionList.vue';
+import Audits from '../views/AuditList.vue';
+import Reports from '../views/ReportList.vue';
+
+import store from '../store'; // Pour vérifier l'authentification
 
 const routes = [
   {
-    path: '/',
-    redirect: '/login'
+    path: '',
+    redirect: '/dashboard'
   },
   {
     path: '/login',
-    component: Login,
-    meta: { layout: AuthLayout }
+    name: 'Login',
+    component: Login
   },
   {
-    path: '/audits',
-    component: AuditList,
-    meta: { layout: DefaultLayout }
+    path: '/dashboard',
+    name: 'Dashboard',
+    component: Dashboard,
+    meta: { requiresAuth: true },
+    children: [
+      {
+        path: 'agents',
+        name: 'Agents',
+        component: Agents
+      },
+      {
+        path: 'audit-sections',
+        name: 'AuditSections',
+        component: AuditSections
+      },
+      {
+        path: 'audit-subsections',
+        name: 'AuditSubsections',
+        component: AuditSubsections
+      },
+      {
+        path: 'audits',
+        name: 'Audits',
+        component: Audits
+      },
+      {
+        path: '/reports',
+        name: 'Reports',
+        component: Reports
+      }
+    ]
   },
   {
-    path: '/audits/:id',
-    component: AuditDetail,
-    meta: { layout: DefaultLayout }
-  },
-  {
-    path: '/sections/:id',
-    component: SectionDetail,
-    meta: { layout: DefaultLayout }
+    path: '/:catchAll(.*)', // Cette route gère les chemins non définis
+    redirect: '/'
   }
-]
+];
 
+// Route Guard pour vérifier si l'utilisateur est authentifié avant d'accéder aux pages protégées
 const router = createRouter({
   history: createWebHistory(),
   routes
-})
+});
 
-// Gestion des layouts dynamiques
+// Gardien de navigation pour les routes nécessitant une authentification
 router.beforeEach((to, from, next) => {
-  const layout = to.meta.layout || DefaultLayout
-  to.meta.layoutComponent = layout
-  next()
-})
+  if (to.meta.requiresAuth && !store.getters.isAuthenticated) {
+    next({ name: 'Login' }); // Redirige vers la page de connexion si l'utilisateur n'est pas authentifié
+  } else {
+    next();
+  }
+});
 
-export default router
+export default router;
